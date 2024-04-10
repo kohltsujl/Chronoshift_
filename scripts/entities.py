@@ -62,10 +62,9 @@ class PhysicsEntity:
                     self.collisions['up'] = True
                 self.pos[1] = entity_rect.y
                 
-        for rect in tilemap.trap_rects_around(self.pos):
+        for rect in tilemap.trap_rects_around(self.pos): #chg 
             if entity_rect.colliderect(rect):
                 self.dead+=1
-                self.game.sfx['hit'].play()
                 self.screenshake = max(16, self.game.screenshake)
                 
                 

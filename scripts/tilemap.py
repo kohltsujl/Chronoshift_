@@ -19,7 +19,7 @@ AUTOTILE_MAP = {
 
 NEIGHBOR_OFFSETS = [(-1, 0), (-1, -1), (0, -1), (1, -1), (1, 0), (0, 0), (-1, 1), (0, 1), (1, 1)]
 PHYSICS_TILES = {'grass', 'stone'}
-TRAP_TILES = {'spikes'}
+TRAP_TILES = {'spikes'} #chg ajout du "tag" trap
 AUTOTILE_TYPES = {'grass', 'stone'}
 
 class Tilemap:
@@ -85,7 +85,7 @@ class Tilemap:
                 rects.append(pygame.Rect(tile['pos'][0] * self.tile_size, tile['pos'][1] * self.tile_size, self.tile_size, self.tile_size))
         return rects
     
-    def trap_rects_around(self, pos):
+    def trap_rects_around(self, pos): #chg cette fonction existait pas
         rects = []
         for tile in self.tiles_around(pos):
             if tile['type'] in TRAP_TILES:
@@ -99,7 +99,7 @@ class Tilemap:
             for shift in [(1, 0), (-1, 0), (0, -1), (0, 1)]:
                 check_loc = str(tile['pos'][0] + shift[0]) + ';' + str(tile['pos'][1] + shift[1])
                 if check_loc in self.tilemap:
-                    if self.tilemap[check_loc]['type'] == 'spikes':
+                    if self.tilemap[check_loc]['type'] == 'spikes': #chg je me souviens pas de tout les chgment dans la fonction mais cette condition je l'ai ajouter
                         continue
                     elif self.tilemap[check_loc]['type'] in AUTOTILE_TYPES :
                         neighbors.add(shift)
@@ -107,7 +107,7 @@ class Tilemap:
             if (tile['type'] in AUTOTILE_TYPES) and (neighbors in AUTOTILE_MAP):
                 tile['variant'] = AUTOTILE_MAP[neighbors]
             
-            # Vérification de l'emplacement des spikes et application de la variation appropriée
+            #chg vérification de l'emplacement des spikes et application de la variation appropriée
             if tile['type'] in TRAP_TILES:
                 if (0, -1) in neighbors:  
                     tile['variant'] = 2 
@@ -117,6 +117,7 @@ class Tilemap:
                     tile['variant'] = 3
                 elif (1, 0) in neighbors:  
                     tile['variant'] = 1
+            #chg fin de la vérif
 
     def render(self, surf, offset=(0, 0)):
         for tile in self.offgrid_tiles:

@@ -17,7 +17,7 @@ class Game:
         pygame.init()
 
         pygame.display.set_caption('ninja game')
-        self.screen = pygame.display.set_mode((1920, 1080))
+        self.screen = pygame.display.set_mode((1920, 1080)) #chg pour avoir en plein écran
         self.display = pygame.Surface((320, 240), pygame.SRCALPHA)
         self.display_2 = pygame.Surface((320, 240))
 
@@ -44,7 +44,7 @@ class Game:
             'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
             'gun': load_image('gun.png'),
             'projectile': load_image('projectile.png'),
-            'spikes': load_images('tiles/spikes'),
+            'spikes': load_images('tiles/spikes'), #chg
         }
         
         self.sfx = {
@@ -88,7 +88,7 @@ class Game:
                 self.enemies.append(Enemy(self, spawner['pos'], (8, 15)))
             
         self.projectiles = []
-        self.particles = []
+        self.particles = [] 
         self.sparks = []
         
         self.scroll = [0, 0]
@@ -118,12 +118,15 @@ class Game:
                 self.transition += 1
             
             if self.player.dead:
-                if self.player.dead == 1:
+                #chg j'ai mis les particules de mort et le son hit ici
+                if self.player.dead == 1: 
+                    self.sfx['hit'].play()
                     for i in range(30):
                                 angle = random.random() * math.pi * 2
                                 speed = random.random() * 5
                                 self.sparks.append(Spark(self.player.rect().center, angle, 2 + random.random()))
                                 self.particles.append(Particle(self, 'particle', self.player.rect().center, velocity=[math.cos(angle + math.pi) * speed * 0.5, math.sin(angle + math.pi) * speed * 0.5], frame=random.randint(0, 7)))
+                #chg fin des particules
                 self.player.dead += 1
                 if self.player.dead >= 10:
                     self.transition = min(30, self.transition + 1)
@@ -170,7 +173,7 @@ class Game:
                 elif projectile[2] > 360:
                     self.projectiles.remove(projectile)
                 elif abs(self.player.dashing) < 50:
-                    if self.player.rect().collidepoint(projectile[0]):
+                    if self.player.rect().collidepoint(projectile[0]): #chg il y avait les particules dans cette condition je crois
                         self.projectiles.remove(projectile)
                         self.player.dead += 1
                         self.sfx['hit'].play()

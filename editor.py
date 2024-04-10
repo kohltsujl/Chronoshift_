@@ -23,7 +23,7 @@ class Editor:
             'large_decor': load_images('tiles/large_decor'),
             'stone': load_images('tiles/stone'),
             'spawners': load_images('tiles/spawners'),
-            'spikes': load_images('tiles/spikes'),
+            'spikes': load_images('tiles/spikes'), #chg 
         }
         
         self.movement = [False, False, False, False]
@@ -31,7 +31,7 @@ class Editor:
         self.tilemap = Tilemap(self, tile_size=16)
         
         try:
-            self.tilemap.load('data/maps/0.json')
+            self.tilemap.load('data/maps/0.json') #chg t'est pas obliger de le changer c'est juste pour ouvrire la bonne map
         except FileNotFoundError:
             pass
         
@@ -112,7 +112,7 @@ class Editor:
                     if event.button == 3:
                         self.right_clicking = False
                         
-                if event.type == pygame.KEYDOWN:
+                if event.type == pygame.KEYDOWN: #chg j'ai changer les touches pour les mettre en azerty
                     if event.key == pygame.K_q:
                         self.movement[0] = True
                     if event.key == pygame.K_d:
@@ -126,7 +126,7 @@ class Editor:
                     if event.key == pygame.K_t:
                         self.tilemap.autotile()
                     if event.key == pygame.K_o:
-                        self.tilemap.save('data/maps/0.json')
+                        self.tilemap.save('data/maps/0.json') #chg j'ai changer la map pour la souvegarder au bon endroit
                     if event.key == pygame.K_LSHIFT:
                         self.shift = True
                 if event.type == pygame.KEYUP:
