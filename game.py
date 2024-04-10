@@ -71,7 +71,162 @@ class Game:
         self.load_level(self.level)
         
         self.screenshake = 0
+        # Colors
+        self.WHITE = (255, 255, 255)
+        self.BLACK = (0, 0, 0)
+        self.RED = (255, 0, 0)
+
+        # Font
+        self.font = pygame.font.Font(None, 36)
+    
+    # Function to display text on the screen
+    def draw_text(self, text, font, color, x, y):
+        text_surface = font.render(text, True, color)
+        text_rect = text_surface.get_rect()
+        text_rect.center = (x, y)
+        self.screen.blit(text_surface, text_rect)
         
+    # Main menu loop
+    def main_menu(self):
+        loop=True
+        while loop:
+            self.screen.fill(self.WHITE)
+            self.draw_text("Main Menu", self.font, self.BLACK, 1920 // 2, 100)
+            
+            # Buttons
+            start_button = pygame.Rect((1920-200) // 2, 200, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, start_button)
+            self.draw_text("Start", self.font, self.WHITE, start_button.centerx, start_button.centery)
+            
+            options_button = pygame.Rect((1920-200) // 2, 300, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, options_button)
+            self.draw_text("Options", self.font, self.WHITE, options_button.centerx, options_button.centery)
+            
+            quit_button = pygame.Rect((1920-200) // 2, 400, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, quit_button)
+            self.draw_text("Quit", self.font, self.WHITE, quit_button.centerx, quit_button.centery)
+            
+            pygame.display.flip()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if start_button.collidepoint(event.pos):
+                        print("Start button clicked")
+                        self.sfx['shoot'].play()
+                        loop=False
+                    elif options_button.collidepoint(event.pos):
+                        self.options_menu()
+                    elif quit_button.collidepoint(event.pos):
+                        pygame.quit()
+                        sys.exit()
+                        
+    # Options menu loop
+    def options_menu(self):
+        while True:
+            self.screen.fill(self.WHITE)
+            self.draw_text("Options Menu", self.font, self.BLACK, 1920 // 2, 100)
+            
+            # Buttons
+            keybinds_button = pygame.Rect(300, 200, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, keybinds_button)
+            self.draw_text("Keybinds", self.font, self.WHITE, keybinds_button.centerx, keybinds_button.centery)
+            
+            video_button = pygame.Rect(300, 300, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, video_button)
+            self.draw_text("Video", self.font, self.WHITE, video_button.centerx, video_button.centery)
+            
+            back_button = pygame.Rect(300, 400, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, back_button)
+            self.draw_text("Back", self.font, self.WHITE, back_button.centerx, back_button.centery)
+            
+            pygame.display.flip()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if keybinds_button.collidepoint(event.pos):
+                        print("Keybinds button clicked")
+                        self.keybinds_menu()
+                        # Add your keybinds logic here
+                    elif video_button.collidepoint(event.pos):
+                        print("Video button clicked")
+                        # Add your video settings logic here
+                    elif back_button.collidepoint(event.pos):
+                        self.main_menu()
+    def change_key_binding(self, action):
+        global key_bindings
+        waiting_for_key = True
+        while waiting_for_key:
+            for event in pygame.event.get():
+                if event.type == pygame.KEYDOWN:
+                    key_bindings[action] = event.key
+                    waiting_for_key = False
+                    print(f"Key for {action} changed to {pygame.key.name(event.key)}")
+                    return
+    def keybinds_menu(self):
+        while True:
+            self.screen.fill(self.WHITE)
+            self.draw_text("Options keybinds", self.font, self.BLACK, 1920 // 2, 50)
+
+            mouvingupbutton = pygame.Rect(300, 400, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, mouvingupbutton)
+            self.draw_text("up", self.font, self.WHITE, mouvingupbutton.centerx, mouvingupbutton.centery)
+
+
+            mouvingdownbutton = pygame.Rect(300, 300, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, mouvingdownbutton)
+            self.draw_text("down", self.font, self.WHITE, mouvingdownbutton.centerx, mouvingdownbutton.centery)
+
+
+            mouvingleftbutton = pygame.Rect(300, 200, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, mouvingleftbutton)
+            self.draw_text("left", self.font, self.WHITE, mouvingleftbutton.centerx, mouvingleftbutton.centery)
+
+
+            mouvingrightbutton = pygame.Rect(300, 100, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, mouvingrightbutton)
+            self.draw_text("right", self.font, self.WHITE, mouvingrightbutton.centerx, mouvingrightbutton.centery)
+
+
+            dashbutton = pygame.Rect(100, 400, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, dashbutton)
+            self.draw_text("dash", self.font, self.WHITE, dashbutton.centerx, dashbutton.centery)
+
+
+            rewindbutton = pygame.Rect(100, 200, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, rewindbutton)
+            self.draw_text("rewind", self.font, self.WHITE, rewindbutton.centerx, rewindbutton.centery)
+
+
+            jumpbutton = pygame.Rect(100, 300, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, jumpbutton)
+            self.draw_text("jump", self.font, self.WHITE, jumpbutton.centerx, jumpbutton.centery)
+
+            back_button = pygame.Rect(300, 500, 200, 50)
+            pygame.draw.rect(self.screen, self.RED, back_button)
+            self.draw_text("Back", self.font, self.WHITE, back_button.centerx, back_button.centery)
+
+            pygame.display.flip()
+            
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    pygame.quit()
+                    sys.exit()
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    if mouvingupbutton.collidepoint(event.pos):
+                        
+                        print("moving up  button clicked")
+                        self.change_key_binding('move_up')
+                        # Add your keybinds logic here
+                    elif back_button.collidepoint(event.pos):
+                        self.options_menu()
+
+                
     def load_level(self, map_id):
         self.tilemap.load('data/maps/' + str(map_id) + '.json')
         
@@ -258,4 +413,5 @@ class Game:
             pygame.display.update()
             self.clock.tick(60)
 
+Game().main_menu()
 Game().run()
