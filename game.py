@@ -6,7 +6,7 @@ import random
 import pygame
 
 from scripts.utils import load_image, load_images, Animation
-from scripts.entities import Player, Enemy
+from scripts.entities import PhysicsEntity, Player, Enemy
 from scripts.tilemap import Tilemap
 from scripts.clouds import Clouds
 from scripts.particle import Particle
@@ -16,7 +16,7 @@ class Game:
     def __init__(self):
         pygame.init()
 
-        pygame.display.set_caption('ninja game')
+        pygame.display.set_caption('Chronoshift')
         self.screen = pygame.display.set_mode((1920, 1080)) #chg pour avoir en plein écran
         self.display = pygame.Surface((320, 240), pygame.SRCALPHA)
         self.display_2 = pygame.Surface((320, 240))
@@ -44,7 +44,7 @@ class Game:
             'particle/particle': Animation(load_images('particles/particle'), img_dur=6, loop=False),
             'gun': load_image('gun.png'),
             'projectile': load_image('projectile.png'),
-            'spikes': load_images('tiles/spikes'), #chg
+            'spikes': load_images('tiles/spikes'),
         }
         
         self.sfx = {
@@ -90,6 +90,9 @@ class Game:
         self.projectiles = []
         self.particles = [] 
         self.sparks = []
+        self.bg_color = (14,219,248)
+        self.ChronoState = 1
+        self.recallState = 0
         
         self.scroll = [0, 0]
         
@@ -104,8 +107,8 @@ class Game:
         self.sfx['ambience'].play(-1)
         
         while True:
-            self.display.fill((0, 0, 0, 0))
-            self.display_2.blit(self.assets['background'], (0, 0))
+            self.display.fill(self.bg_color)
+            # self.display_2.blit(self.assets['background'], (0, 0))
             
             self.screenshake = max(0, self.screenshake - 1)
             
@@ -118,8 +121,8 @@ class Game:
                 self.transition += 1
             
             if self.player.dead:
-                #chg j'ai mis les particules de mort et le son hit ici
                 if self.player.dead == 1: 
+                    self.player.recall_pos = []
                     self.sfx['hit'].play()
                     for i in range(30):
                                 angle = random.random() * math.pi * 2
@@ -133,19 +136,23 @@ class Game:
                 if self.player.dead > 40:
                     self.load_level(self.level)
                     self.player.dead = 0
+                    
+            
             
             self.scroll[0] += (self.player.rect().centerx - self.display.get_width() / 2 - self.scroll[0]) / 30
             self.scroll[1] += (self.player.rect().centery - self.display.get_height() / 2 - self.scroll[1]) / 30
             render_scroll = (int(self.scroll[0]), int(self.scroll[1]))
+            
+            
             
             for rect in self.leaf_spawners:
                 if random.random() * 49999 < rect.width * rect.height:
                     pos = (rect.x + random.random() * rect.width, rect.y + random.random() * rect.height)
                     self.particles.append(Particle(self, 'leaf', pos, velocity=[-0.1, 0.3], frame=random.randint(0, 20)))
             
-            self.clouds.update()
-            self.clouds.render(self.display_2, offset=render_scroll)
             
+            self.clouds.update(self.ChronoState)
+            self.clouds.render(self.display_2, offset=render_scroll)
             self.tilemap.render(self.display, offset=render_scroll)
             
             for enemy in self.enemies.copy():
@@ -212,12 +219,32 @@ class Game:
                             self.sfx['jump'].play()
                     if event.key == pygame.K_x:
                         self.player.dash()
+                    if event.key == pygame.K_r:
+                        self.recallState = 1
+                        self.ChronoState = -2
+                        
                 if event.type == pygame.KEYUP:
                     if event.key == pygame.K_LEFT:
                         self.movement[0] = False
                     if event.key == pygame.K_RIGHT:
                         self.movement[1] = False
-                        
+                    if event.key == pygame.K_r:
+                        self.recallState = 0
+                        self.ChronoState = 1
+                print(self.recallState)
+                print(len(self.player.recall_pos))
+                print(self.player.recall_index)
+                if self.recallState == 1 and len(self.player.recall_pos) == 30 and self.player.recall_index >= 0:
+                    print("sucess")
+                    self.bg_color = (30,30,30)
+                    self.player.recall()
+                    if self.player.recall_index == 0:
+                        self.player.recall_pos = []
+                else:
+                    self.player.time_pos()
+                    self.bg_color = (14,219,248)
+                    self.player.recall_index = 29
+                
             if self.transition:
                 transition_surf = pygame.Surface(self.display.get_size())
                 pygame.draw.circle(transition_surf, (255, 255, 255), (self.display.get_width() // 2, self.display.get_height() // 2), (30 - abs(self.transition)) * 8)
