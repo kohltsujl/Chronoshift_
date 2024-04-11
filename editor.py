@@ -31,7 +31,7 @@ class Editor:
         self.tilemap = Tilemap(self, tile_size=16)
         
         try:
-            self.tilemap.load('data/maps/0.json') #chg t'est pas obliger de le changer c'est juste pour ouvrire la bonne map
+            self.tilemap.load('data/maps/2.json') #chg t'est pas obliger de le changer c'est juste pour ouvrire la bonne map
         except FileNotFoundError:
             pass
         
@@ -126,7 +126,7 @@ class Editor:
                     if event.key == pygame.K_t:
                         self.tilemap.autotile()
                     if event.key == pygame.K_o:
-                        self.tilemap.save('data/maps/0.json') #chg j'ai changer la map pour la souvegarder au bon endroit
+                        self.tilemap.save('data/maps/2.json') #chg j'ai changer la map pour la souvegarder au bon endroit
                     if event.key == pygame.K_LSHIFT:
                         self.shift = True
                 if event.type == pygame.KEYUP:

@@ -77,7 +77,6 @@ class Game:
 
         # Font
         self.font = pygame.font.Font(None, 36)
-    
     # Function to display text on the screen
     def draw_text(self, text, font, color, x, y):
         text_surface = font.render(text, True, color)
@@ -124,7 +123,8 @@ class Game:
                         
     # Options menu loop
     def options_menu(self):
-        while True:
+        loop = True
+        while loop:
             self.screen.fill(self.WHITE)
             self.draw_text("Options Menu", self.font, self.BLACK, 1920 // 2, 100)
             
@@ -156,7 +156,8 @@ class Game:
                         print("Video button clicked")
                         # Add your video settings logic here
                     elif back_button.collidepoint(event.pos):
-                        self.main_menu()
+                        loop = False
+                        
     def change_key_binding(self, action):
         global key_bindings
         waiting_for_key = True
@@ -168,7 +169,8 @@ class Game:
                     print(f"Key for {action} changed to {pygame.key.name(event.key)}")
                     return
     def keybinds_menu(self):
-        while True:
+        loop = True
+        while loop:
             self.screen.fill(self.WHITE)
             self.draw_text("Options keybinds", self.font, self.BLACK, 1920 // 2, 50)
 
@@ -220,10 +222,9 @@ class Game:
                     if mouvingupbutton.collidepoint(event.pos):
                         
                         print("moving up  button clicked")
-                        self.change_key_binding('move_up')
-                        # Add your keybinds logic here
+
                     elif back_button.collidepoint(event.pos):
-                        self.options_menu()
+                        loop = False
 
                 
     def load_level(self, map_id):
